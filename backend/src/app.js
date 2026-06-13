@@ -32,16 +32,13 @@ if (process.env.NODE_ENV !== 'production') {
 // Main Routes
 app.use('/api', mainRoutes);
 
-// Serve static files from frontend directory
+// Serve static files from frontend build directory
 const path = require('path');
-// Path ke folder frontend adalah C:\Users\UsEr\Downloads\umkm-conect-wa\frontend
-// __dirname adalah C:\Users\UsEr\Downloads\umkm-conect-wa\backend\src
-// Maka ../../../frontend itu salah, seharusnya ../../frontend
-app.use(express.static(path.join(__dirname, '../../frontend')));
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
 
-// Basic route for health check or root
-app.get('/', (req, res) => {
-  res.send('UMKM Connect WA Backend is running!');
+// Catch-all route to serve React app for any undefined routes (React Router support)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
 });
 
 // Error handling middleware (optional, for later)
