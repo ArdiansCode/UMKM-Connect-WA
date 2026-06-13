@@ -1,6 +1,6 @@
-const app = require('./src/app');
-const config = require('./src/config');
-const logger = require('./src/utils/logger');
+const app = require('./backend/src/app');
+const config = require('./backend/src/config');
+const logger = require('./backend/src/utils/logger');
 
 const PORT = config.port;
 
