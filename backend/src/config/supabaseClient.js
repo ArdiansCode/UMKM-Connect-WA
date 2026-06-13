@@ -1,6 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
-import config from './index.js'; // Import from index.js explicitly
-import logger from '../utils/logger.js';
+const { createClient } = require('@supabase/supabase-js');
+const config = require('./index.js');
+const logger = require('../utils/logger.js');
 
 let supabaseClient = null;
 
@@ -16,5 +16,6 @@ function getSupabaseClient() {
   return supabaseClient;
 }
 
-// Export the client for use in services
-export { getSupabaseClient as getClient };
+module.exports = {
+  getClient: getSupabaseClient
+};
