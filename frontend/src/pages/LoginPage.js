@@ -1,28 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Input, Text, VStack, Heading, Link, Alert, AlertIcon } from '@chakra-ui/react';
-import { registerUser, loginUser } from '../services/apiService'; // Import API functions
+import { Box, Button, Input, Text, VStack, Heading, Alert, AlertIcon } from '@chakra-ui/react';
+import { registerUser } from '../services/apiService'; // Import API functions
 // Removed unused import: import logger from '../utils/logger'; 
 
 // Added onLoginSuccess prop from App.js
 function LoginPage({ onLoginSuccess }) {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login and register form
   const [whatsappNumber, setWhatsappNumber] = useState('');
   const [name, setName] = useState(''); // For registration
   const [businessName, setBusinessName] = useState(''); // For registration
   const [businessType, setBusinessType] = useState(''); // For registration
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  const handleToggleForm = () => {
-    setIsLogin(!isLogin);
-    setError(''); // Clear error when switching form
-    // Clear form fields when switching
-    setWhatsappNumber('');
-    setName('');
-    setBusinessName('');
-    setBusinessType('');
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

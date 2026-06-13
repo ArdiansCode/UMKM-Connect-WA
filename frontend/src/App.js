@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import { Box, Heading, Text, Center, VStack, Button } from '@chakra-ui/react';
+import { Heading, Text, Center, VStack, Button } from '@chakra-ui/react';
 import './App.css'; // General App styling
 
 function SuccessPage({ onLogout }) {
