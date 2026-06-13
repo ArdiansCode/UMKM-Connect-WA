@@ -2,6 +2,10 @@
 node_modules/
 package-lock.json
 
+# Next.js build output
+.next/
+out/
+
 # Environment variables
 .env
 .env.*
