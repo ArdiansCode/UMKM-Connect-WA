@@ -3,10 +3,23 @@ const cors = require('cors');
 const mainRoutes = require('./routes'); // Assuming index.js is in routes/
 // Import other middleware if needed later
 
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
 const app = express();
 
+// Security middleware
+app.use(helmet()); // Set various HTTP headers for security
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Terlalu banyak permintaan dari IP ini, coba lagi nanti.'
+});
+app.use('/api/', limiter); // Apply to all API requests
+
 // Middleware
-app.use(cors()); // Enable CORS for all origins (adjust for production)
+app.use(cors()); // Sebaiknya batasi origin jika sudah tahu domain frontend-nya
 app.use(express.json()); // Parse JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
@@ -15,6 +28,13 @@ require('dotenv').config({ path: '../.env' }); // Adjust path if needed
 
 // Main Routes
 app.use('/api', mainRoutes);
+
+// Serve static files from frontend directory
+const path = require('path');
+// Path ke folder frontend adalah C:\Users\UsEr\Downloads\umkm-conect-wa\frontend
+// __dirname adalah C:\Users\UsEr\Downloads\umkm-conect-wa\backend\src
+// Maka ../../../frontend itu salah, seharusnya ../../frontend
+app.use(express.static(path.join(__dirname, '../../frontend')));
 
 // Basic route for health check or root
 app.get('/', (req, res) => {

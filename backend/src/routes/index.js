@@ -3,12 +3,14 @@ const router = express.Router();
 const logger = require('../utils/logger');
 
 // Import route handlers
-const authRoutes = require('./authRoutes');        // For registration and login
-const chatRoutes = require('./chatRoutes');        // For handling WhatsApp messages and chat logic
+const authRoutes = require('./authRoutes');
+const chatRoutes = require('./chatRoutes');
+const adminRoutes = require('./adminRoutes');
 
 // Define API routes
-router.use('/auth', authRoutes);        // API routes for authentication
-router.use('/chat', chatRoutes);        // API routes for chat processing
+router.use('/auth', authRoutes);
+router.use('/chat', chatRoutes);
+router.use('/admin', adminRoutes);
 
 // Health check route for the API
 router.get('/health', (req, res) => {

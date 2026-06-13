@@ -7,39 +7,21 @@ const logger = require('../utils/logger');
 // const config = require('../config'); // Not strictly needed here unless using config directly
 
 // --- Handler functions definition ---
-const handlePemasaran = async (user, message) => {
-    const prompt = `Anda adalah asisten UMKM. Bantu pemilik bisnis bernama ${user.business_name} (${user.business_type}) terkait pemasaran: ${message}`;
-    return await geminiService.generateContent(prompt);
-};
+// Hapus handlePemasaran, handleKeuangan, handleGeneralQuery karena sudah digantikan logika di dalam processIncomingMessage
 
-const handleKeuangan = async (user, message) => {
-    const prompt = `Anda adalah asisten UMKM. Bantu pemilik bisnis bernama ${user.business_name} (${user.business_type}) terkait keuangan: ${message}`;
-    return await geminiService.generateContent(prompt);
-};
-
-const handleGeneralQuery = async (user, message) => {
-    const prompt = `Anda adalah asisten UMKM. Jawab pertanyaan berikut: ${message}`;
-    return await geminiService.generateContent(prompt);
-};
-
-// Process incoming messages hook
-const processIncomingMessage = async (req, res) => {
-    // Fonnte menggunakan field 'sender' dan 'message'
-    const { sender, message } = req.body; 
-    const senderWhatsAppNumber = sender;
-    const userMessage = message;
-
-    if (!senderWhatsAppNumber || !userMessage) {
-        logger.warn("Received incomplete message payload from Fonnte:", { sender, message });
-        return res.status(400).send("Bad Request: Incomplete message from Fonnte.");
+// Logika sanitasi pesan agar tidak mengandung data sensitif di log
+const sanitizeLog = (data) => {
+    if (typeof data === 'string') {
+        return data.replace(/(\+?62|08)\d{7,11}/g, '[REDACTED_PHONE]');
     }
-    
-    // Assuming Fonnte sends some form of message ID or identifier in body
-    const messageIdentifier = req.body.id || req.body.messageId || 'N/A'; 
-    logger.info(`Received message via Fonnte (ID: ${messageIdentifier}) from ${senderWhatsAppNumber} with body: "${userMessage}"`);
+    return data;
+};
 
-    try {
-        const user = await userService.getUserByWhatsAppNumber(senderWhatsAppNumber);
+// ... di dalam prosesIncomingMessage ...
+    logger.info(`Received message via Fonnte (ID: ${messageIdentifier}) from ${sanitizeLog(senderWhatsAppNumber)}`);
+
+// ... di dalam catch block ...
+    logger.error(`Error processing message from ${sanitizeLog(senderWhatsAppNumber)}:`, error.message);
         
         if (!user) {
             // ... (logika registrasi tetap sama) ...
@@ -75,9 +57,9 @@ const processIncomingMessage = async (req, res) => {
                            `💰 Keuangan (Ketik: /keuangan)\n` +
                            `❓ Bantuan (Ketik: /bantuan)`;
         } else if (lowerCaseMessage.includes('/pemasaran') || lowerCaseMessage.includes('pemasaran')) {
-            responseText = await getGeminiReply(`Bantu terkait pemasaran: ${userMessage}`, history);
+            responseText = await getGeminiReply(`Berikan saran pemasaran singkat untuk usaha ${user.business_name}: ${userMessage}`, history);
         } else if (lowerCaseMessage.includes('/keuangan') || lowerCaseMessage.includes('keuangan')) {
-            responseText = await getGeminiReply(`Bantu terkait keuangan: ${userMessage}`, history);
+            responseText = await getGeminiReply(`Berikan saran keuangan singkat untuk usaha ${user.business_name}: ${userMessage}`, history);
         } else if (lowerCaseMessage.includes('/bantuan') || lowerCaseMessage.includes('bantuan')) {
              responseText = "Anda bisa meminta bantuan untuk:\n" +
                             "👉 Pemasaran: Buat caption, ide promosi.\n" +
@@ -134,9 +116,9 @@ const processChatMessageFromWebUI = async (req, res) => {
                            `💰 Keuangan\n` +
                            `❓ Bantuan`;
         } else if (lowerCaseMessage.startsWith('/pemasaran')) {
-            responseText = await handlePemasaran(user, message);
+            responseText = await getGeminiReply(`Berikan saran pemasaran singkat untuk usaha ${user.business_name}: ${message}`, history);
         } else if (lowerCaseMessage.startsWith('/keuangan')) {
-            responseText = await handleKeuangan(user, message);
+            responseText = await getGeminiReply(`Berikan saran keuangan singkat untuk usaha ${user.business_name}: ${message}`, history);
         } else if (lowerCaseMessage === '/bantuan') {
              responseText = "Ketik '/menu' untuk melihat daftar fitur.\n" +
                             "Anda bisa meminta bantuan untuk:\n" +
