@@ -24,7 +24,10 @@ app.use(express.json()); // Parse JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // Load environment variables
-require('dotenv').config({ path: '../.env' }); // Adjust path if needed
+// Vercel handles env vars via dashboard, so don't try to load .env file
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config({ path: '../.env' });
+}
 
 // Main Routes
 app.use('/api', mainRoutes);
