@@ -24,3 +24,10 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# WhatsApp Session (Tambahkan ini di paling bawah)
+auth_info_multi/
+session/
+.wwebjs_auth/
+.wwebjs_cache/
+tokens/
