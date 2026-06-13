@@ -1,3 +1,4 @@
+const express = require('express'); // Required for Vercel static analysis
 const app = require('./backend/src/app');
 const config = require('./backend/src/config');
 const logger = require('./backend/src/utils/logger');
