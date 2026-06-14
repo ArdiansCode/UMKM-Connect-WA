@@ -1,10 +1,10 @@
 # UMKM Connect WA
 
-Asisten digital berbasis **Next.js** dan **AI Gemini** untuk membantu operasional UMKM melalui WhatsApp. Sistem ini membantu UMKM dalam mencatat keuangan, merancang strategi pemasaran, dan memberikan layanan pelanggan otomatis.
+Asisten digital berbasis **Next.js** dan **AI Gemini** untuk membantu operasional UMKM melalui WhatsApp. Sistem ini membantu UMKM dalam mencatat keuangan dan merancang strategi pemasaran.
 
 ## 🚀 Fitur Utama
 
-1. **WhatsApp Integration:** Otomatis memproses dan membalas pesan pelanggan menggunakan API [Fonnte](https://fonnte.com).
+1. **WhatsApp Integration:** Menghubungkan nomor WhatsApp UMKM dengan sistem backend menggunakan API [Fonnte](https://fonnte.com).
 2. **AI Assistant (Gemini):** Memberikan saran cerdas untuk pengembangan bisnis UMKM.
 3. **Pencatatan Keuangan:** Membantu UMKM dalam mencatat transaksi keuangan secara terstruktur melalui chat.
 4. **Strategi Pemasaran:** Memberikan ide dan strategi pemasaran yang relevan dengan jenis bisnis UMKM.
