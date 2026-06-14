@@ -20,12 +20,13 @@ export async function POST(req) {
     
     if (!sender || !message) return new NextResponse("Bad Request", { status: 400 });
 
-    setTimeout(() => {
-        processMessage(sender, message).catch(err => logger.error(err));
-    }, 0);
+    // setTimeout(() => {
+    //     processMessage(sender, message).catch(err => logger.error(err));
+    // }, 0);
 
     logger.info(`Received message from ${sanitizeLog(sender)}`);
 
+    await processMessage(sender, message);
 
     return new NextResponse("OK", { status: 200 });
   } catch (error) {
