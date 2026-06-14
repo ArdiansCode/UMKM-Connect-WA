@@ -11,15 +11,36 @@ const sanitizeLog = (data) => {
 };
 
 export async function POST(req) {
+  const rawBody = await req.text(); 
+  console.log("--- RAW BODY DITERIMA ---", rawBody);
   try {
-    const body = await req.json();
-    const { sender, message } = body; 
-    if (!sender || !message) return new NextResponse("Bad Request", { status: 400 });
+    const body = JSON.parse(rawBody);
+    const sender = body.sender || body.pengirim;
+    const message = body.message || body.pesan;
     
+    if (!sender || !message) return new NextResponse("Bad Request", { status: 400 });
+
+    setTimeout(() => {
+        processMessage(sender, message).catch(err => logger.error(err));
+    }, 0);
+
     logger.info(`Received message from ${sanitizeLog(sender)}`);
 
+
+    return new NextResponse("OK", { status: 200 });
+  } catch (error) {
+    logger.error(`Error in Webhook: ${error.message}`);
+    return new NextResponse("Error", { status: 500 });
+  }
+}
+
+async function processMessage(sender, message) {
+  try {
     const user = await userService.getUserByWhatsAppNumber(sender);
-    if (!user) return new NextResponse("User not registered.", { status: 200 });
+    if (!user) {
+        logger.info(`User not registered: ${sender}`);
+        return;
+    }
 
     const history = await chatMemoryService.getHistory(user.id);
     await chatMemoryService.saveMessage(user.id, 'user', message);
@@ -44,9 +65,7 @@ export async function POST(req) {
 
     await chatMemoryService.saveMessage(user.id, 'assistant', responseText);
     await fonnteService.sendMessage(sender, responseText);
-    return new NextResponse("OK", { status: 200 });
   } catch (error) {
-    logger.error(`Error: ${error.message}`);
-    return new NextResponse("Error", { status: 500 });
+    logger.error(`Error in processMessage: ${error.message}`);
   }
 }
